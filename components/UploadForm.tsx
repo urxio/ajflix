@@ -81,18 +81,23 @@ export default function UploadForm() {
 
     setProgress(80)
 
-    // Save metadata to Supabase
-    const { error: dbError } = await supabase.from('videos').insert({
-      title: title.trim(),
-      description: description.trim() || null,
-      video_url: videoUrl,
-      thumbnail_url: thumbnailUrl,
-      genre: genre || null,
+    // Save metadata via server API route (uses service role key)
+    const dbRes = await fetch('/api/videos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: title.trim(),
+        description: description.trim() || null,
+        video_url: videoUrl,
+        thumbnail_url: thumbnailUrl,
+        genre: genre || null,
+      }),
     })
 
-    if (dbError) {
+    if (!dbRes.ok) {
+      const { error } = await dbRes.json()
       setStatus('error')
-      setErrorMsg(dbError.message)
+      setErrorMsg(error || 'Failed to save video')
       return
     }
 
