@@ -11,11 +11,3 @@ export type Video = {
   dislikes: number
   created_at: string
 }
-
-export type Comment = {
-  id: string
-  video_id: string
-  author_name: string
-  body: string
-  created_at: string
-}
