@@ -8,6 +8,12 @@ const adminSupabase = createClient(
 )
 
 export async function POST(req: Request) {
+  // Check env vars are present
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error('SUPABASE_SERVICE_ROLE_KEY is not set')
+    return NextResponse.json({ error: 'Server misconfiguration: missing service role key' }, { status: 500 })
+  }
+
   // Verify the user is authenticated
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -24,7 +30,10 @@ export async function POST(req: Request) {
     genre: genre || null,
   })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('DB insert error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   return NextResponse.json({ success: true })
 }
