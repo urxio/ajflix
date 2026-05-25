@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import VideoPlayer from '@/components/VideoPlayer'
+import LikeDislike from '@/components/LikeDislike'
+import Comments from '@/components/Comments'
 import { notFound } from 'next/navigation'
 import type { Video } from '@/lib/types'
 
@@ -39,11 +41,22 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
             </span>
           )}
         </div>
-        <p className="text-zinc-500 text-sm mt-1">{video.views.toLocaleString()} views</p>
+
+        <div className="flex items-center justify-between mt-3">
+          <p className="text-zinc-500 text-sm">{video.views.toLocaleString()} views</p>
+          <LikeDislike
+            videoId={video.id}
+            initialLikes={video.likes ?? 0}
+            initialDislikes={video.dislikes ?? 0}
+          />
+        </div>
+
         {video.description && (
           <p className="text-zinc-300 mt-4 leading-relaxed">{video.description}</p>
         )}
       </div>
+
+      <Comments videoId={video.id} />
     </div>
   )
 }

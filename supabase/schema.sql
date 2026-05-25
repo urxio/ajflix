@@ -30,6 +30,24 @@ create policy "Admin update" on videos
 create policy "Admin delete" on videos
   for delete using (auth.role() = 'authenticated');
 
+-- Likes and dislikes columns
+alter table videos add column if not exists likes int default 0;
+alter table videos add column if not exists dislikes int default 0;
+
+-- Comments table
+create table if not exists comments (
+  id uuid primary key default gen_random_uuid(),
+  video_id uuid not null references videos(id) on delete cascade,
+  author_name text not null,
+  body text not null,
+  created_at timestamptz default now()
+);
+
+alter table comments enable row level security;
+
+create policy "Public read comments" on comments
+  for select using (true);
+
 -- Increment views function (called from server action)
 create or replace function increment_views(video_id uuid)
 returns void as $$
