@@ -18,6 +18,8 @@ export type Show = {
   description: string | null
   thumbnail_url: string | null
   genre: string | null
+  likes: number
+  dislikes: number
   created_at: string
 }
 

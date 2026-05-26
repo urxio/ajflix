@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import VideoPlayer from '@/components/VideoPlayer'
+import LikeDislike from '@/components/LikeDislike'
 import { notFound } from 'next/navigation'
 import type { Show, Episode } from '@/lib/types'
 
@@ -49,6 +50,10 @@ export default async function ShowPage({ params }: { params: Promise<{ id: strin
               {show.genre}
             </span>
           )}
+        </div>
+
+        <div className="flex items-center justify-between mt-3">
+          <LikeDislike showId={show.id} initialLikes={show.likes ?? 0} initialDislikes={show.dislikes ?? 0} />
         </div>
 
         {show.description && (

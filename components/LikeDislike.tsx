@@ -5,16 +5,20 @@ import { useState, useEffect } from 'react'
 type Reaction = 'liked' | 'disliked' | null
 
 interface Props {
-  videoId: string
+  videoId?: string
+  showId?: string
   initialLikes: number
   initialDislikes: number
 }
 
-export default function LikeDislike({ videoId, initialLikes, initialDislikes }: Props) {
+export default function LikeDislike({ videoId, showId, initialLikes, initialDislikes }: Props) {
+  const id = videoId ?? showId!
+  const endpoint = videoId ? `/api/videos/${id}/reactions` : `/api/shows/${id}/reactions`
+
   const [likes, setLikes] = useState(initialLikes)
   const [dislikes, setDislikes] = useState(initialDislikes)
   const [reaction, setReaction] = useState<Reaction>(null)
-  const storageKey = `ajflix_reaction_${videoId}`
+  const storageKey = `ajflix_reaction_${id}`
 
   useEffect(() => {
     setReaction(localStorage.getItem(storageKey) as Reaction)
@@ -43,7 +47,7 @@ export default function LikeDislike({ videoId, initialLikes, initialDislikes }: 
     else localStorage.removeItem(storageKey)
 
     for (const action of calls) {
-      await fetch(`/api/videos/${videoId}/reactions`, {
+      await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action }),
