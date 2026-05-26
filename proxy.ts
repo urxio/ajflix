@@ -25,19 +25,27 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-
   const { pathname } = request.nextUrl
 
-  // Allow /admin/login through always
+  // ── Admin routes ─────────────────────────────────────────────────
   if (pathname === '/admin/login') {
     return supabaseResponse
   }
 
-  // Protect all other /admin/* routes
-  if (pathname.startsWith('/admin') && !user) {
+  if (pathname.startsWith('/admin')) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin/login'
+      return NextResponse.redirect(url)
+    }
+    return supabaseResponse
+  }
+
+  // ── Access-code gate for regular users ───────────────────────────
+  if (!request.cookies.has('ajflix_access')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/admin/login'
+    url.pathname = '/enter-code'
     return NextResponse.redirect(url)
   }
 
@@ -45,5 +53,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/',
+    '/shows/:path*',
+    '/watch/:path*',
+  ],
 }

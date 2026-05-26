@@ -35,3 +35,12 @@ export type Episode = {
   duration: number | null
   created_at: string
 }
+
+export type AccessCode = {
+  id: string
+  code: string
+  label: string | null
+  is_active: boolean
+  uses: number
+  created_at: string
+}
