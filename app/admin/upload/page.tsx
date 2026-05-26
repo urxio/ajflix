@@ -1,4 +1,4 @@
-import UploadForm from '@/components/UploadForm'
+import UploadToggle from '@/components/UploadToggle'
 import Link from 'next/link'
 
 export default function UploadPage() {
@@ -10,11 +10,11 @@ export default function UploadPage() {
         </Link>
       </div>
 
-      <h1 className="text-2xl font-bold text-white mb-1">Upload Video</h1>
-      <p className="text-zinc-400 text-sm mb-8">Add a new movie or video to ajflix</p>
+      <h1 className="text-2xl font-bold text-white mb-1">Upload Content</h1>
+      <p className="text-zinc-400 text-sm mb-8">Add a movie or TV show to ajflix</p>
 
       <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-        <UploadForm />
+        <UploadToggle />
       </div>
     </div>
   )

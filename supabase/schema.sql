@@ -34,6 +34,44 @@ create policy "Admin delete" on videos
 alter table videos add column if not exists likes int default 0;
 alter table videos add column if not exists dislikes int default 0;
 
+-- Shows table
+create table if not exists shows (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  thumbnail_url text,
+  genre text,
+  created_at timestamptz default now()
+);
+
+alter table shows enable row level security;
+
+create policy "Public read shows" on shows for select using (true);
+create policy "Admin insert shows" on shows for insert with check (auth.role() = 'authenticated');
+create policy "Admin update shows" on shows for update using (auth.role() = 'authenticated');
+create policy "Admin delete shows" on shows for delete using (auth.role() = 'authenticated');
+
+-- Episodes table
+create table if not exists episodes (
+  id uuid primary key default gen_random_uuid(),
+  show_id uuid not null references shows(id) on delete cascade,
+  season int not null default 1,
+  episode int not null,
+  title text not null,
+  description text,
+  video_url text not null,
+  thumbnail_url text,
+  duration int,
+  created_at timestamptz default now()
+);
+
+alter table episodes enable row level security;
+
+create policy "Public read episodes" on episodes for select using (true);
+create policy "Admin insert episodes" on episodes for insert with check (auth.role() = 'authenticated');
+create policy "Admin update episodes" on episodes for update using (auth.role() = 'authenticated');
+create policy "Admin delete episodes" on episodes for delete using (auth.role() = 'authenticated');
+
 
 -- Increment views function (called from server action)
 create or replace function increment_views(video_id uuid)
