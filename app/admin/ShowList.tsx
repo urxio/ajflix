@@ -50,13 +50,21 @@ export default function AdminShowList({ shows }: { shows: Show[] }) {
             </p>
           </div>
 
-          <button
-            onClick={() => handleDelete(show)}
-            disabled={deleting === show.id}
-            className="text-red-400 hover:text-red-300 text-xs border border-red-900 hover:border-red-700 px-3 py-1.5 rounded transition-colors disabled:opacity-50 shrink-0"
-          >
-            {deleting === show.id ? 'Deleting…' : 'Delete'}
-          </button>
+          <div className="flex gap-2 shrink-0">
+            <a
+              href={`/admin/shows/${show.id}/edit`}
+              className="text-zinc-400 hover:text-white text-xs border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded transition-colors"
+            >
+              Edit
+            </a>
+            <button
+              onClick={() => handleDelete(show)}
+              disabled={deleting === show.id}
+              className="text-red-400 hover:text-red-300 text-xs border border-red-900 hover:border-red-700 px-3 py-1.5 rounded transition-colors disabled:opacity-50"
+            >
+              {deleting === show.id ? 'Deleting…' : 'Delete'}
+            </button>
+          </div>
         </div>
       ))}
     </div>
