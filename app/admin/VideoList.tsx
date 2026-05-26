@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import type { Video } from '@/lib/types'
 
 export default function AdminVideoList({ videos }: { videos: Video[] }) {
@@ -13,18 +12,7 @@ export default function AdminVideoList({ videos }: { videos: Video[] }) {
     if (!confirm(`Delete "${video.title}"? This cannot be undone.`)) return
     setDeleting(video.id)
 
-    const supabase = createClient()
-
-    // Extract storage paths from URLs
-    const videoPath = video.video_url.split('/videos/')[1]
-    if (videoPath) await supabase.storage.from('videos').remove([videoPath])
-
-    if (video.thumbnail_url) {
-      const thumbPath = video.thumbnail_url.split('/thumbnails/')[1]
-      if (thumbPath) await supabase.storage.from('thumbnails').remove([thumbPath])
-    }
-
-    await supabase.from('videos').delete().eq('id', video.id)
+    await fetch(`/api/videos/${video.id}`, { method: 'DELETE' })
 
     setDeleting(null)
     router.refresh()

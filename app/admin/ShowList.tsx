@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import type { Show } from '@/lib/types'
 
 export default function AdminShowList({ shows }: { shows: Show[] }) {
@@ -13,15 +12,7 @@ export default function AdminShowList({ shows }: { shows: Show[] }) {
     if (!confirm(`Delete "${show.title}" and all its episodes? This cannot be undone.`)) return
     setDeleting(show.id)
 
-    const supabase = createClient()
-
-    if (show.thumbnail_url) {
-      const thumbPath = show.thumbnail_url.split('/thumbnails/')[1]
-      if (thumbPath) await supabase.storage.from('thumbnails').remove([thumbPath])
-    }
-
-    // Episodes cascade-delete via FK
-    await supabase.from('shows').delete().eq('id', show.id)
+    await fetch(`/api/shows/${show.id}`, { method: 'DELETE' })
 
     setDeleting(null)
     router.refresh()
