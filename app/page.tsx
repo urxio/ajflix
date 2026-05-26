@@ -13,10 +13,7 @@ export default async function Home() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h1 className="text-3xl font-bold text-white mb-2">Movies &amp; Videos</h1>
-      <p className="text-zinc-400 mb-8">Stream the latest uploads</p>
-
-      {list.length === 0 ? (
+{list.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 text-zinc-500">
           <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
