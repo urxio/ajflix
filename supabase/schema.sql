@@ -79,6 +79,55 @@ returns void as $$
   update videos set views = views + 1 where id = video_id;
 $$ language sql security definer;
 
+-- Trailers table
+create table if not exists trailers (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  video_url text not null,
+  thumbnail_url text,
+  genre text,
+  views int default 0,
+  likes int default 0,
+  dislikes int default 0,
+  created_at timestamptz default now()
+);
+
+alter table trailers enable row level security;
+
+create policy "Public read trailers" on trailers for select using (true);
+create policy "Admin insert trailers" on trailers for insert with check (auth.role() = 'authenticated');
+create policy "Admin update trailers" on trailers for update using (auth.role() = 'authenticated');
+create policy "Admin delete trailers" on trailers for delete using (auth.role() = 'authenticated');
+
+create or replace function increment_trailer_views(trailer_id uuid)
+returns void as $$
+  update trailers set views = views + 1 where id = trailer_id;
+$$ language sql security definer;
+
+-- Songs table
+create table if not exists songs (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  artist text,
+  description text,
+  audio_url text not null,
+  thumbnail_url text,
+  genre text,
+  duration int,
+  views int default 0,
+  likes int default 0,
+  dislikes int default 0,
+  created_at timestamptz default now()
+);
+
+alter table songs enable row level security;
+
+create policy "Public read songs" on songs for select using (true);
+create policy "Admin insert songs" on songs for insert with check (auth.role() = 'authenticated');
+create policy "Admin update songs" on songs for update using (auth.role() = 'authenticated');
+create policy "Admin delete songs" on songs for delete using (auth.role() = 'authenticated');
+
 -- Storage buckets
 insert into storage.buckets (id, name, public) values ('videos', 'videos', true);
 insert into storage.buckets (id, name, public) values ('thumbnails', 'thumbnails', true);

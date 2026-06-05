@@ -36,6 +36,34 @@ export type Episode = {
   created_at: string
 }
 
+export type Trailer = {
+  id: string
+  title: string
+  description: string | null
+  video_url: string
+  thumbnail_url: string | null
+  genre: string | null
+  views: number
+  likes: number
+  dislikes: number
+  created_at: string
+}
+
+export type Song = {
+  id: string
+  title: string
+  artist: string | null
+  description: string | null
+  audio_url: string
+  thumbnail_url: string | null
+  genre: string | null
+  duration: number | null
+  views: number
+  likes: number
+  dislikes: number
+  created_at: string
+}
+
 export type AccessCode = {
   id: string
   code: string

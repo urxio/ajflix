@@ -1,19 +1,30 @@
 import { createClient } from '@/lib/supabase/server'
 import VideoCard from '@/components/VideoCard'
 import ShowCard from '@/components/ShowCard'
-import type { Video, Show } from '@/lib/types'
+import TrailerCard from '@/components/TrailerCard'
+import SongCard from '@/components/SongCard'
+import type { Video, Show, Trailer, Song } from '@/lib/types'
 
 export default async function Home() {
   const supabase = await createClient()
 
-  const [{ data: videosData }, { data: showsData }] = await Promise.all([
+  const [
+    { data: videosData },
+    { data: showsData },
+    { data: trailersData },
+    { data: songsData },
+  ] = await Promise.all([
     supabase.from('videos').select('*').order('created_at', { ascending: false }),
     supabase.from('shows').select('*').order('created_at', { ascending: false }),
+    supabase.from('trailers').select('*').order('created_at', { ascending: false }),
+    supabase.from('songs').select('*').order('created_at', { ascending: false }),
   ])
 
   const videos = (videosData ?? []) as Video[]
   const shows = (showsData ?? []) as Show[]
-  const hasContent = videos.length > 0 || shows.length > 0
+  const trailers = (trailersData ?? []) as Trailer[]
+  const songs = (songsData ?? []) as Song[]
+  const hasContent = videos.length > 0 || shows.length > 0 || trailers.length > 0 || songs.length > 0
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -44,6 +55,28 @@ export default async function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {videos.map((video) => (
               <VideoCard key={video.id} video={video} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {trailers.length > 0 && (
+        <section>
+          <h2 className="text-xl font-bold text-white mb-4">Trailers</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {trailers.map((trailer) => (
+              <TrailerCard key={trailer.id} trailer={trailer} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {songs.length > 0 && (
+        <section>
+          <h2 className="text-xl font-bold text-white mb-4">Songs</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {songs.map((song) => (
+              <SongCard key={song.id} song={song} />
             ))}
           </div>
         </section>
