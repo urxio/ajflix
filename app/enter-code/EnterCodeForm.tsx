@@ -28,7 +28,7 @@ export default function EnterCodeForm() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+    <div className="fixed inset-0 flex items-center justify-center px-4 overflow-hidden">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
