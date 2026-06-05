@@ -65,6 +65,12 @@ export default function AdminTrailerList({ trailers }: { trailers: Trailer[] }) 
             >
               View
             </a>
+            <a
+              href={`/admin/trailers/${trailer.id}/edit`}
+              className="text-zinc-400 hover:text-white text-xs border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded transition-colors"
+            >
+              Edit
+            </a>
             <button
               onClick={() => handleDelete(trailer)}
               disabled={deleting === trailer.id}

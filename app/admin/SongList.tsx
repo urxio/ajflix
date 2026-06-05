@@ -62,6 +62,12 @@ export default function AdminSongList({ songs }: { songs: Song[] }) {
             >
               View
             </a>
+            <a
+              href={`/admin/songs/${song.id}/edit`}
+              className="text-zinc-400 hover:text-white text-xs border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded transition-colors"
+            >
+              Edit
+            </a>
             <button
               onClick={() => handleDelete(song)}
               disabled={deleting === song.id}
