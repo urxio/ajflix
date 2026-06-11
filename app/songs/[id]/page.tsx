@@ -3,6 +3,12 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import type { Song } from '@/lib/types'
 
+async function incrementViews(id: string) {
+  'use server'
+  const supabase = await createClient()
+  await supabase.rpc('increment_song_views', { song_id: id })
+}
+
 export default async function SongPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
@@ -11,6 +17,7 @@ export default async function SongPage({ params }: { params: Promise<{ id: strin
   if (!data) notFound()
 
   const song = data as Song
+  incrementViews(id)
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

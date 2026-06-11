@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LikeDislike from '@/components/LikeDislike'
 import type { Show, Episode } from '@/lib/types'
 
@@ -12,6 +12,14 @@ export default function ShowPlayer({
   episodes: Episode[]
 }) {
   const [current, setCurrent] = useState<Episode | null>(episodes[0] ?? null)
+  const countedRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    if (!current) return
+    if (countedRef.current.has(current.id)) return
+    countedRef.current.add(current.id)
+    fetch(`/api/episodes/${current.id}/views`, { method: 'POST' }).catch(() => {})
+  }, [current])
 
   const seasons = episodes.reduce<Record<number, Episode[]>>((acc, ep) => {
     if (!acc[ep.season]) acc[ep.season] = []
