@@ -46,6 +46,7 @@ export default function AdminShowList({ shows }: { shows: Show[] }) {
             <p className="text-white font-medium truncate">{show.title}</p>
             <p className="text-zinc-500 text-xs">
               {show.genre && `${show.genre} · `}
+              {(show.views ?? 0).toLocaleString()} views ·{' '}
               {new Date(show.created_at).toLocaleDateString()}
             </p>
           </div>

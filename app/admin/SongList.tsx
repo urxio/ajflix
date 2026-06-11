@@ -49,6 +49,7 @@ export default function AdminSongList({ songs }: { songs: Song[] }) {
             <p className="text-zinc-500 text-xs">
               {song.artist && `${song.artist} · `}
               {song.genre && `${song.genre} · `}
+              {song.views.toLocaleString()} views ·{' '}
               {new Date(song.created_at).toLocaleDateString()}
             </p>
           </div>
