@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import VideoPlayer from '@/components/VideoPlayer'
 import LikeDislike from '@/components/LikeDislike'
+import Comments from '@/components/Comments'
 import { notFound } from 'next/navigation'
 import type { Video } from '@/lib/types'
 
@@ -14,11 +15,10 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
   const { id } = await params
   const supabase = await createClient()
 
-  const { data } = await supabase
-    .from('videos')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const [{ data }, { data: { user } }] = await Promise.all([
+    supabase.from('videos').select('*').eq('id', id).single(),
+    supabase.auth.getUser(),
+  ])
 
   if (!data) notFound()
 
@@ -55,6 +55,7 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
+      <Comments contentType="video" contentId={video.id} canModerate={!!user} />
     </div>
   )
 }

@@ -66,6 +66,15 @@ export type Song = {
   created_at: string
 }
 
+export type Comment = {
+  id: string
+  content_type: 'video' | 'show'
+  content_id: string
+  name: string
+  body: string
+  created_at: string
+}
+
 export type AccessCode = {
   id: string
   code: string
