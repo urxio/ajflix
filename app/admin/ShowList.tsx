@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Show } from '@/lib/types'
+import type { Show, Episode } from '@/lib/types'
 
-export default function AdminShowList({ shows }: { shows: Show[] }) {
+type ShowWithEpisodes = Show & { episodes: Episode[] }
+
+export default function AdminShowList({ shows }: { shows: ShowWithEpisodes[] }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState<string | null>(null)
 
@@ -46,7 +48,7 @@ export default function AdminShowList({ shows }: { shows: Show[] }) {
             <p className="text-white font-medium truncate">{show.title}</p>
             <p className="text-zinc-500 text-xs">
               {show.genre && `${show.genre} · `}
-              {(show.views ?? 0).toLocaleString()} views ·{' '}
+              {show.episodes.reduce((sum, ep) => sum + (ep.views ?? 0), 0).toLocaleString()} views ·{' '}
               {new Date(show.created_at).toLocaleDateString()}
             </p>
           </div>

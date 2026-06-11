@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
 
       <section className="mb-10">
         <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">TV Shows</h2>
-        <AdminShowList shows={(shows ?? []) as Show[]} />
+        <AdminShowList shows={showsWithEpisodes} />
       </section>
 
       <section className="mb-10">
