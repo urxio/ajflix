@@ -5,7 +5,8 @@ import AdminVideoList from './VideoList'
 import AdminShowList from './ShowList'
 import AdminTrailerList from './TrailerList'
 import AdminSongList from './SongList'
-import type { Video, Show, Trailer, Song } from '@/lib/types'
+import StatsSection from './StatsSection'
+import type { Video, Show, Trailer, Song, Episode } from '@/lib/types'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -13,12 +14,18 @@ export default async function AdminDashboard() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/admin/login')
 
-  const [{ data: videos }, { data: shows }, { data: trailers }, { data: songs }] = await Promise.all([
+  const [{ data: videos }, { data: shows }, { data: trailers }, { data: songs }, { data: episodes }] = await Promise.all([
     supabase.from('videos').select('*').order('created_at', { ascending: false }),
     supabase.from('shows').select('*').order('created_at', { ascending: false }),
     supabase.from('trailers').select('*').order('created_at', { ascending: false }),
     supabase.from('songs').select('*').order('created_at', { ascending: false }),
+    supabase.from('episodes').select('*'),
   ])
+
+  const showsWithEpisodes = (shows ?? []).map((show) => ({
+    ...(show as Show),
+    episodes: ((episodes ?? []) as Episode[]).filter((e) => e.show_id === show.id),
+  }))
 
   const movieCount = videos?.length ?? 0
   const showCount = shows?.length ?? 0
@@ -50,6 +57,13 @@ export default async function AdminDashboard() {
           <AdminSignOut />
         </div>
       </div>
+
+      <StatsSection
+        videos={(videos ?? []) as Video[]}
+        trailers={(trailers ?? []) as Trailer[]}
+        songs={(songs ?? []) as Song[]}
+        shows={showsWithEpisodes}
+      />
 
       <section className="mb-10">
         <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Movies</h2>

@@ -13,6 +13,8 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
     supabase.from('shows').select('*').eq('id', id).single(),
   ])
 
+  await supabase.rpc('increment_episode_views', { episode_id: epId })
+
   if (!epData || !showData) notFound()
 
   const episode = epData as Episode

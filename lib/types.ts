@@ -34,6 +34,7 @@ export type Episode = {
   video_url: string
   thumbnail_url: string | null
   duration: number | null
+  views: number
   created_at: string
 }
 
